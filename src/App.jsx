@@ -187,27 +187,14 @@ export default function App() {
     return parsedMessage;
   }
 
-  /*
-  // Auto-connect on first render
-  useEffect(() => {
-    //  connect();
-    return () => disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-*/
-  // Reconnect when broker/topic changes
-  /*
-  useEffect(() => {
-    // Only reconnect if we already attempted connection
-    if (!brokerUrl || !topic) return;
+  const testMessage = () => {
+    const avgTest = Math.floor((Math.random() * 20) + 90);
+    const minTest = Math.floor((Math.random() * 50) + 30);
+    const maxTest = Math.floor((Math.random() * 80) + 120);
 
-    const t = setTimeout(() => {
-      connect();
-    }, 400);
-    return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [brokerUrl, topic]);
-*/
+    setMessages([...messages, parseMessage(`Average, ${avgTest}; Min, ${minTest}; Max, ${maxTest};`)])
+  }
+
   return (
     <div style={{ fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif", padding: 16, maxWidth: 980 }}>
       <h2 style={{ margin: 0 }}>MQTT Test Client</h2>
@@ -319,7 +306,7 @@ export default function App() {
         </div>
       </div>
       <div>
-        <button onClick={() => setMessages([...messages, parseMessage("Average, 9.9; Min, 8.3; Max, 11.4;")])}>Test</button>
+        <button onClick={() => testMessage()}>Test</button>
       </div>
 
       <div style={{ marginTop: 14, fontSize: 12, color: "#666" }}>
