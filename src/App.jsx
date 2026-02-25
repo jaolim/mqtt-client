@@ -50,7 +50,7 @@ export function SoundChart({ data }) {
           //domain={[domainMin, domainMax]}
           tickCount={Math.min(20, Math.max(6, Math.round((domainMax - domainMin) * 10) + 1))}
           tickFormatter={(v) => v.toFixed(1)}
-         // allowDecimals={true}
+        // allowDecimals={true}
         />
         <Tooltip
           formatter={(value) => `${Number(value).toFixed(1)}`}
@@ -78,8 +78,8 @@ export function SoundChart({ data }) {
 }
 
 export default function App() {
-  const [brokerUrl, setBrokerUrl] = useState('ws://test.mosquitto.org:8080');
-  const [topic, setTopic] = useState('ExpIoT/Noise');
+  const [brokerUrl, setBrokerUrl] = useState('');
+  const [topic, setTopic] = useState('');
 
   const [isConnected, setIsConnected] = useState(false);
   const [status, setStatus] = useState("Idle");
@@ -122,8 +122,12 @@ export default function App() {
   };
 
   const connect = () => {
-    disconnect();
+    if (!brokerUrl.startsWith("wss://")) {
+      setStatus("Broker must use wss:// when app is served over HTTPS");
+      return;
+    }
 
+    disconnect();
     setStatus(`Connecting to ${brokerUrl} ...`);
 
     const client = mqtt.connect(brokerUrl, options);
@@ -183,14 +187,16 @@ export default function App() {
     return parsedMessage;
   }
 
+  /*
   // Auto-connect on first render
   useEffect(() => {
     //  connect();
     return () => disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+*/
   // Reconnect when broker/topic changes
+  /*
   useEffect(() => {
     // Only reconnect if we already attempted connection
     if (!brokerUrl || !topic) return;
@@ -198,11 +204,10 @@ export default function App() {
     const t = setTimeout(() => {
       connect();
     }, 400);
-
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [brokerUrl, topic]);
-
+*/
   return (
     <div style={{ fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif", padding: 16, maxWidth: 980 }}>
       <h2 style={{ margin: 0 }}>MQTT Test Client</h2>
