@@ -166,33 +166,36 @@ export default function App() {
       setLatestTopic(msgTopic);
       setLatestTime(new Date());
       setLatestRaw(raw);
-      if (raw.toLowerCase().includes('average')) {
-        setMessages(prev => [...prev, parseMessage(raw)]);
-      }
+      parseMessage(raw);
 
     });
   };
 
   const parseMessage = (message) => {
-    const messageValues = message.split(';');
-    const messageAverage = Number(messageValues[0].split(',')[1].trim());
-    const messageMin = Number(messageValues[1].split(',')[1].trim());
-    const messageMax = Number(messageValues[2].split(',')[1].trim());
-    const parsedMessage = {
-      time: new Date(),
-      min: messageMin,
-      max: messageMax,
-      average: messageAverage
+    const messageLower = message.toLowerCase();
+    if (messageLower.includes('average') && messageLower.includes('min') && messageLower.includes('max')) {
+      const messageValues = message.toLowerCase().split(';');
+      const messageAverage = Number(messageValues[0].split(',')[1].trim());
+      const messageMin = Number(messageValues[1].split(',')[1].trim());
+      const messageMax = Number(messageValues[2].split(',')[1].trim());
+      if (!isNaN(messageAverage) && !isNaN(messageMin) && !isNaN(messageMax)) {
+        const parsedMessage = {
+          time: new Date(),
+          min: messageMin,
+          max: messageMax,
+          average: messageAverage
+        }
+        setMessages(prev => [...prev, parsedMessage]);
+      }
     }
-    return parsedMessage;
   }
 
   const testMessage = () => {
     const avgTest = Math.floor((Math.random() * 20) + 90);
     const minTest = Math.floor((Math.random() * 50) + 30);
     const maxTest = Math.floor((Math.random() * 80) + 120);
+    parseMessage(`Average, ${avgTest}; Min, ${minTest}; Max, ${maxTest};`)
 
-    setMessages([...messages, parseMessage(`Average, ${avgTest}; Min, ${minTest}; Max, ${maxTest};`)])
   }
 
   return (
